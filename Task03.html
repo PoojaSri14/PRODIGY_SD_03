@@ -1,1 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Contact Management System</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input, button { margin: 5px; padding: 8px; }
+    table, th, td { border: 1px solid #ccc; border-collapse: collapse; padding: 8px; }
+    table { margin-top: 20px; width: 100%; }
+  </style>
+</head>
+<body>
 
+  <h1>Simple Contact Management System</h1>
+
+  <input type="text" id="name" placeholder="Name" required>
+  <input type="text" id="phone" placeholder="Phone Number" required>
+  <input type="email" id="email" placeholder="Email" required>
+  <button onclick="addContact()">Add Contact</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th><th>Phone</th><th>Email</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="contactList"></tbody>
+  </table>
+
+  <script>
+    let contacts = JSON.parse(localStorage.getItem("contacts")) || [];
+
+    function renderContacts() {
+      const list = document.getElementById("contactList");
+      list.innerHTML = "";
+      contacts.forEach((c, i) => {
+        list.innerHTML += `
+          <tr>
+            <td>${c.name}</td>
+            <td>${c.phone}</td>
+            <td>${c.email}</td>
+            <td>
+              <button onclick="editContact(${i})">Edit</button>
+              <button onclick="deleteContact(${i})">Delete</button>
+            </td>
+          </tr>`;
+      });
+    }
+
+    function addContact() {
+      const name = document.getElementById("name").value;
+      const phone = document.getElementById("phone").value;
+      const email = document.getElementById("email").value;
+      if (name && phone && email) {
+        contacts.push({ name, phone, email });
+        localStorage.setItem("contacts", JSON.stringify(contacts));
+        renderContacts();
+        document.getElementById("name").value = "";
+        document.getElementById("phone").value = "";
+        document.getElementById("email").value = "";
+      }
+    }
+
+    function deleteContact(index) {
+      contacts.splice(index, 1);
+      localStorage.setItem("contacts", JSON.stringify(contacts));
+      renderContacts();
+    }
+
+    function editContact(index) {
+      const c = contacts[index];
+      document.getElementById("name").value = c.name;
+      document.getElementById("phone").value = c.phone;
+      document.getElementById("email").value = c.email;
+      deleteContact(index);
+    }
+
+    renderContacts();
+  </script>
+
+</body>
+</html>
