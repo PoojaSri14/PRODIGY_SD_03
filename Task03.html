@@ -1,1 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Contact Management System</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 20px;
+    }
 
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      box-sizing: border-box;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .contact {
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .contact:last-child {
+      border-bottom: none;
+    }
+
+    .contact-actions button {
+      margin-right: 5px;
+      background-color: #2196F3;
+    }
+
+    .contact-actions button.delete {
+      background-color: #f44336;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Contact Management System</h2>
+    <input type="text" id="name" placeholder="Name">
+    <input type="text" id="phone" placeholder="Phone">
+    <input type="email" id="email" placeholder="Email">
+    <button onclick="addOrUpdateContact()">Save Contact</button>
+
+    <div id="contactsList"></div>
+  </div>
+
+  <script>
+    let contacts = [];
+    let editIndex = -1;
+
+    function addOrUpdateContact() {
+      const name = document.getElementById('name').value;
+      const phone = document.getElementById('phone').value;
+      const email = document.getElementById('email').value;
+
+      if (!name || !phone || !email) {
+        alert("Please fill all fields.");
+        return;
+      }
+
+      if (editIndex === -1) {
+        contacts.push({ name, phone, email });
+      } else {
+        contacts[editIndex] = { name, phone, email };
+        editIndex = -1;
+      }
+
+      clearForm();
+      displayContacts();
+    }
+
+    function displayContacts() {
+      const list = document.getElementById('contactsList');
+      list.innerHTML = '';
+
+      contacts.forEach((c, index) => {
+        list.innerHTML += `
+          <div class="contact">
+            <strong>${c.name}</strong><br>
+            ${c.phone} | ${c.email}
+            <div class="contact-actions">
+              <button onclick="editContact(${index})">Edit</button>
+              <button class="delete" onclick="deleteContact(${index})">Delete</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function editContact(index) {
+      const c = contacts[index];
+      document.getElementById('name').value = c.name;
+      document.getElementById('phone').value = c.phone;
+      document.getElementById('email').value = c.email;
+      editIndex = index;
+    }
+
+    function deleteContact(index) {
+      contacts.splice(index, 1);
+      displayContacts();
+    }
+
+    function clearForm() {
+      document.getElementById('name').value = '';
+      document.getElementById('phone').value = '';
+      document.getElementById('email').value = '';
+    }
+  </script>
+
+</body>
+</html>
